@@ -4,8 +4,10 @@ const mongoose = require('mongoose');
 const bodyParser = require("body-parser");
 const passport = require('passport');
 
-const patients = require("./routes/api/patients");
+const users = require("./routes/api/users");
+const publications = require("./routes/api/publications");
 
+require('dotenv').config();
 
 const app = express();
 
@@ -28,8 +30,9 @@ app.use(passport.initialize());
 require('./config/passport')(passport);
 
 // Use Routes
-patients.setup(app);
-//app.use('/api/patients', patients);
+users.setup(app);
+publications.setup(app);
+//app.use('/api/users', users);
 // app.use('/api/profile', profile);
 // app.use('/api/posts', posts);
 

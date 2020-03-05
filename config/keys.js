@@ -1,5 +1,5 @@
 module.exports = {
-    mongoURI: 'mongodb://otziiuser:otziiadmin@127.0.0.1/otzii',
+    mongoURI: 'mongodb://appuser:appadmin@127.0.0.1/app',
     secretOrKey:'secret'
   };
   

@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
 const passport = require('passport');
 
-const Patient = require('../models/Patient');
+const User = require('../models/User');
 var mongoose = require("mongoose");
 const mongo = require('mongodb');
 const validateRegisterInput = require('../validation/register');
@@ -13,10 +13,10 @@ const validateLoginInput = require('../validation/login');
 
 
 /**
- * POST /Patient
- * Api add Patient.
+ * POST /User
+ * Api add User.
  */
-exports.addPatient = (req, res, next) => {
+exports.addUser = (req, res, next) => {
     try {
         
         // if(!req.body){
@@ -32,8 +32,8 @@ exports.addPatient = (req, res, next) => {
             return res.status(400).json(errors);
         }
 
-        Patient.findOne({ email: req.body.email }).then(patient => {
-            if (patient) {
+        User.findOne({ email: req.body.email }).then(user => {
+            if (user) {
                 errors.email = 'Email already exists';
                 return res.status(400).json(errors);
             } else {
@@ -43,7 +43,7 @@ exports.addPatient = (req, res, next) => {
                 //     d: 'mm' // Default
                 //   });
 
-                const newPatient = new Patient({
+                const newUser = new User({
                     nom: req.body.nom,
                     prenom: req.body.prenom,
                     email: req.body.email,
@@ -54,16 +54,16 @@ exports.addPatient = (req, res, next) => {
                 });
 
                 bcrypt.genSalt(10, (err, salt) => {
-                    bcrypt.hash(newPatient.mot_de_pass, salt, (err, hash) => {
+                    bcrypt.hash(newUser.mot_de_pass, salt, (err, hash) => {
                         if (err) throw err;
-                        newPatient.mot_de_pass = hash;
-                        newPatient
+                        newUser.mot_de_pass = hash;
+                        newUser
                             .save()
-                            .then(patient => res.json(
+                            .then(user => res.json(
                                 {
                                     status: "success",
-                                    message: "ShopMap successfully added",
-                                    data: patient
+                                    message: "user successfully added",
+                                    data: user
                                 }
                             ))
                             .catch(err => console.log(err));
@@ -83,10 +83,10 @@ exports.addPatient = (req, res, next) => {
 }
 
 /**
- * POST /Patient
- * Api login Patient.
+ * POST /User
+ * Api login User.
  */
-exports.loginPatient = async function (req, res, next) {
+exports.loginUser = async function (req, res, next) {
     try {
         const { errors, isValid } = validateLoginInput(req.body);
         if (!isValid) {
@@ -96,15 +96,15 @@ exports.loginPatient = async function (req, res, next) {
         const email = req.body.email;
         const mot_de_pass = req.body.mot_de_passe;
 
-        patient = await Patient.findOne({ email });
-        if (!patient) {
-            errors.email = 'Patient not found';
+        user = await User.findOne({ email });
+        if (!user) {
+            errors.email = 'User not found';
             return res.status(404).json(errors);
         }
 
-        bcrypt.compare(mot_de_pass, patient.mot_de_pass).then(isMatch => {
+        bcrypt.compare(mot_de_pass, user.mot_de_pass).then(isMatch => {
             if (isMatch) {
-                const payload = { id: patient.id, nom: patient.nom,email: patient.email };
+                const payload = { id: user.id, nom: user.nom,email: user.email };
                 jwt.sign(
                     payload,
                     keys.secretOrKey,
@@ -135,10 +135,10 @@ exports.loginPatient = async function (req, res, next) {
 }
 
 /**
- * GET /Patient
- * Api current Patient.
+ * GET /User
+ * Api current User.
  */
-exports.currentPatient = async function (req, res, next) {
+exports.currentUser = async function (req, res, next) {
     try {
         return res.json({
             id: req.user.id,
@@ -162,9 +162,9 @@ exports.currentPatient = async function (req, res, next) {
 //   passport.authenticate('jwt', { session: false }),
 //   (req, res) => {
 //     res.json({
-//       id: req.patient.id,
-//       name: req.patient.name,
-//       email: req.patient.email
+//       id: req.user.id,
+//       name: req.user.name,
+//       email: req.user.email
 //     });
 //   }
 // );
