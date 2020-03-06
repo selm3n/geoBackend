@@ -31,12 +31,13 @@ const upload = multer({
 module.exports.setup = function(app) {
 
   app.post('/api/publications/add',
+    passport.authenticate('jwt', { session: false }),
     upload.array(
       "images",
       100
     ),
     publicationcontroller.addPublication);
-    
+
 
   app.get('/api/publications/all',
     publicationcontroller.allPublications);
