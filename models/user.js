@@ -11,6 +11,7 @@ const UserSchema = new Schema({
   pays: String,
   adresse: String,
   email_verif: Boolean,
+  role: String,
   
     
 },
