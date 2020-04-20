@@ -1,5 +1,5 @@
 
-const publicationcontroller = require("../../controllers/publication");
+const articlecontroller = require("../../controllers/article");
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 // const multer = require('../../config/multer');
@@ -30,17 +30,17 @@ const upload = multer({
 
 module.exports.setup = function(app) {
 
-  app.post('/api/publications/add',
+  app.post('/api/articles/add',
     passport.authenticate('jwt', { session: false }),
     upload.array(
       "images",
       100
     ),
-    publicationcontroller.addPublication);
+    articlecontroller.addArticle);
 
 
-  app.get('/api/publications/all',
-    publicationcontroller.allPublications);
+  app.get('/api/articles/all',
+    articlecontroller.allArticles);
 
 
 

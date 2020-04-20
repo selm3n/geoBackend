@@ -1,11 +1,9 @@
-
-
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
 const passport = require('passport');
 
-const User = require('../models/User');
+const Client = require('../models/Client');
 var mongoose = require("mongoose");
 const mongo = require('mongodb');
 const validateRegisterInput = require('../validation/register');
@@ -13,10 +11,10 @@ const validateLoginInput = require('../validation/login');
 
 
 /**
- * POST /User
- * Api add User.
+ * POST /Client
+ * Api add Client.
  */
-exports.addUser = (req, res, next) => {
+exports.addClient = (req, res, next) => {
     try {
         
         // if(!req.body){
@@ -26,47 +24,61 @@ exports.addUser = (req, res, next) => {
         //       }); 
         // }
 
+        const { errors, isValid } = validateRegisterInput(req.body);
 
-        // const { errors, isValid } = validateRegisterInput(req.body);
+        // Check Validation
+        if (!isValid) {
+            return res.status(400).json(errors);
+        }
+        
 
-        // // Check Validation
-        // if (!isValid) {
-        //     return res.status(400).json(errors);
-        // }
-
-
-        User.findOne({ email: req.body.email }).then(user => {
-            if (user) {
-                errors.email = 'Email already exists';
+        Client.findOne({ email: req.body.email }).then(client => {
+            if (client) {
+                errors.email = 'Client email already exists';
                 return res.status(400).json(errors);
             } else {
-                //   const avatar = gravatar.url(req.body.email, {
-                //     s: '200', // Size
-                //     r: 'pg', // Rating
-                //     d: 'mm' // Default
-                //   });
 
-                const newUser = new User({
+                const newClient = new Client({
+                    type: req.body.type,
+                    civilite: req.body.civilite,
                     nom: req.body.nom,
                     prenom: req.body.prenom,
+                    rs: req.body.rs,
                     email: req.body.email,
+                    tel_fixe: req.body.tel_fixe,
+                    adresses: req.body.adresses,
+                    cp: req.body.cp,
+                    pays: req.body.pays,
+                    ville: req.body.ville,
+                    news_letter: req.body.news_letter,
+                    ip: req.body.ip,
                     mot_de_pass: req.body.mot_de_pass,
-                    role: req.body.role,
+                    status: req.body.status,
+                    compte: req.body.compte,
+                    activite: req.body.activite,
+                    siren: req.body.siren,
+                    tva_intra: req.body.tva_intra,
+                    fonction: req.body.fonction,
+                    nom_resp_achat: req.body.nom_resp_achat,
+                    tel_mobile: req.body.tel_mobile,
+                    interet: req.body.interet,
+
                     
+                    //compte_active: false,
 
                 });
 
                 bcrypt.genSalt(10, (err, salt) => {
-                    bcrypt.hash(newUser.mot_de_pass, salt, (err, hash) => {
+                    bcrypt.hash(newClient.mot_de_pass, salt, (err, hash) => {
                         if (err) throw err;
-                        newUser.mot_de_pass = hash;
-                        newUser
+                        newClient.mot_de_pass = hash;
+                        newClient
                             .save()
-                            .then(user => res.json(
+                            .then(client => res.json(
                                 {
                                     status: "success",
-                                    message: "user successfully added",
-                                    data: user
+                                    message: "client successfully added",
+                                    data: client
                                 }
                             ))
                             .catch(err => console.log(err));
@@ -86,32 +98,33 @@ exports.addUser = (req, res, next) => {
 }
 
 /**
- * POST /User
- * Api login User.
+ * POST /Client
+ * Api login Client.
  */
-exports.loginUser = async function (req, res, next) {
+exports.loginClient = async function (req, res, next) {
     try {
+        console.log('body ',req.body);
         const { errors, isValid } = validateLoginInput(req.body);
         if (!isValid) {
             return res.status(400).json(errors);
         }
 
         const email = req.body.email;
-        const mot_de_pass = req.body.mot_de_passe;
+        const mot_de_pass = req.body.mot_de_pass;
 
-        user = await User.findOne({ email });
-        if (!user) {
-            errors.email = 'User not found';
+        client = await Client.findOne({ email });
+        if (!client) {
+            errors.email = 'Client not found';
             return res.status(404).json(errors);
         }
 
-        bcrypt.compare(mot_de_pass, user.mot_de_pass).then(isMatch => {
+        bcrypt.compare(mot_de_pass, client.mot_de_pass).then(isMatch => {
             if (isMatch) {
-                const payload = { id: user.id, nom: user.nom,email: user.email };
+                const payload = { id: client.id, nom: client.nom,email: client.email };
                 jwt.sign(
                     payload,
                     keys.secretOrKey,
-                    { expiresIn: 3600 },
+                    //{ expiresIn: 3600 },
                     (err, token) => {
                         res.json({
                             success: true,
@@ -127,21 +140,18 @@ exports.loginUser = async function (req, res, next) {
 
     } catch (err) {
         console.log(err);
-        //throw new Error(err.message);
-        // return res.status(400).json({
-        //   status: "error",
-        //   messsage: err.message,
-
-        // });
+        throw new Error(err.message);
+        
     }
 
 }
 
 /**
- * GET /User
- * Api current User.
+ * GET /Client
+ * Api current Client.
  */
-exports.currentUser = async function (req, res, next) {
+exports.currentClient = async function (req, res, next) {
+    // console.log('req.client',req.client.nom);
     try {
         return res.json({
             id: req.user.id,
@@ -153,23 +163,7 @@ exports.currentUser = async function (req, res, next) {
     } catch (err) {
         console.log(err);
         throw new Error(err.message);
-        // return res.status(400).json({
-        //   status: "error",
-        //   messsage: err.message,
-
-        // });
+        
     }
 }
-// router.get(
-//   '/current',
-//   passport.authenticate('jwt', { session: false }),
-//   (req, res) => {
-//     res.json({
-//       id: req.user.id,
-//       name: req.user.name,
-//       email: req.user.email
-//     });
-//   }
-// );
 
-// module.exports = router;
