@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
 const passport = require('passport');
 
-const Article = require('../models/Article');
+const Article = require('../models/article');
 var mongoose = require("mongoose");
 const mongo = require('mongodb');
 const validateRegisterInput = require('../validation/register');
