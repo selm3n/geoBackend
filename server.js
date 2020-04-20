@@ -8,6 +8,8 @@ const users = require("./routes/api/users");
 const clients = require("./routes/api/clients");
 const articles = require("./routes/api/articles");
 
+const indexArticles = require("./routes/index/articles");
+
 const swaggerUi = require('swagger-ui-express');
 var swaggerJsdoc = require("swagger-jsdoc");
 ///const swaggerDocument = require('./swagger.json');
@@ -47,8 +49,10 @@ securityDefinitions:{
   
   
   // List of files to be processes. You can also set globs './routes/*.js'
-  apis: ["./routes/api/clients.js",
-  //"./routes/api/users.js", 
+  apis: [
+    "./routes/index/*s.js",
+    "./routes/api/*.js",
+  
   ],
   
 };
@@ -79,10 +83,13 @@ app.use(passport.initialize());
 require('./config/passport')(passport);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
-// Use Routes
+// Use api Routes
 users.setup(app);
 articles.setup(app);
 clients.setup(app);
+
+// Use api Routes
+indexArticles.setup(app);
 //app.use('/api/users', users);
 // app.use('/api/profile', profile);
 // app.use('/api/posts', posts);

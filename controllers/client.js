@@ -103,7 +103,7 @@ exports.addClient = (req, res, next) => {
  */
 exports.loginClient = async function (req, res, next) {
     try {
-        console.log('body ',req.body);
+        //console.log('body ',req.body);
         const { errors, isValid } = validateLoginInput(req.body);
         if (!isValid) {
             return res.status(400).json(errors);
