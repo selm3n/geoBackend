@@ -9,6 +9,40 @@ const mongo = require('mongodb');
 const validateRegisterInput = require('../validation/register');
 const validateLoginInput = require('../validation/login');
 
+const crypto = require('crypto');
+
+var path = require('path');
+var  hbs = require('nodemailer-express-handlebars'),
+  email = process.env.MAILER_EMAIL_ID || 'auth_email_address@gmail.com',
+  pass = process.env.MAILER_PASSWORD || 'auth_email_pass'
+  nodemailer = require('nodemailer');
+
+
+
+var smtpTransport = nodemailer.createTransport(
+{
+  service: process.env.MAILER_SERVICE_PROVIDER || 'Gmail',
+  auth: {
+    user: 'ggeonegoce@gmail.com',//email,
+    pass: 'pblpxcylaxbxadbm'//pass
+  }
+  
+});
+
+var handlebarsOptions = {
+    viewEngine: {
+        extName: '.html',
+        partialsDir: './templates',
+        layoutsDir: './templates',
+        defaultLayout: '',
+      },
+  viewPath: path.resolve('./templates/'),
+  extName: '.html'
+};
+
+smtpTransport.use('compile', hbs(handlebarsOptions));
+
+
 
 /**
  * POST /Client
@@ -16,7 +50,7 @@ const validateLoginInput = require('../validation/login');
  */
 exports.addClient = (req, res, next) => {
     try {
-        
+
         // if(!req.body){
         //     return res.status(400).json({
         //         status: 400,
@@ -30,7 +64,7 @@ exports.addClient = (req, res, next) => {
         if (!isValid) {
             return res.status(400).json(errors);
         }
-        
+
 
         Client.findOne({ email: req.body.email }).then(client => {
             if (client) {
@@ -63,7 +97,7 @@ exports.addClient = (req, res, next) => {
                     tel_mobile: req.body.tel_mobile,
                     interet: req.body.interet,
 
-                    
+
                     //compte_active: false,
 
                 });
@@ -120,7 +154,7 @@ exports.loginClient = async function (req, res, next) {
 
         bcrypt.compare(mot_de_pass, client.mot_de_pass).then(isMatch => {
             if (isMatch) {
-                const payload = { id: client.id, nom: client.nom,email: client.email };
+                const payload = { id: client.id, nom: client.nom, email: client.email };
                 jwt.sign(
                     payload,
                     keys.secretOrKey,
@@ -141,7 +175,7 @@ exports.loginClient = async function (req, res, next) {
     } catch (err) {
         console.log(err);
         throw new Error(err.message);
-        
+
     }
 
 }
@@ -151,19 +185,138 @@ exports.loginClient = async function (req, res, next) {
  * Api current Client.
  */
 exports.currentClient = async function (req, res, next) {
-    // console.log('req.client',req.client.nom);
+    // console.log('req.client',req.user.nom);
     try {
         return res.json({
             id: req.user.id,
             name: req.user.nom,
             email: req.user.email
         });
-               
-            
+
+
     } catch (err) {
         console.log(err);
         throw new Error(err.message);
-        
+
     }
 }
+
+exports.allClients = (req, res, next) => {
+    try {
+        Client.find()
+            .then(client => {
+                res.json(
+                    {
+                        success: true,
+                        data: client
+                    }
+                );
+            })
+    } catch (err) {
+        console.log(err);
+        throw new Error(err.message);
+
+    }
+}
+
+exports.forgotPassword = async function (req, res, next)  {
+    try {
+        
+        var client = await Client.findOne({
+                email: req.body.email
+            }).exec();
+        
+        
+           
+        var token =  crypto.randomBytes(20);
+        token =  token.toString('hex');
+        
+        var newClient = await Client.findByIdAndUpdate({ _id: client._id }, { reset_password_token: token, reset_password_expires: Date.now() + 86400000 }, { new: true }).exec() ;
+        
+        
+            var data = {
+                to: client.email,
+                from: process.env.MAILER_EMAIL_ID,
+                template: 'forgot-password-email',
+                subject: 'Réinitialisation de votre mot de passe',
+                context: {
+                    url: 'http://localhost:3000/api/clients/resetpassword?token=' + token,
+                    name: client.nom.split(' ')[0]
+                }
+            };
+            
+            smtpTransport.sendMail(data, function (err) {
+                if (!err) {
+                     return res.json({ message: 'Kindly check your email for further instructions', data: data });
+                } else {
+                    console.log('err',err);
+                    return res.status(400).json({
+                        //status: 400,
+                        status: "error",
+                        message: err
+                      });
+                }
+            });
+        
+    } catch (err) {
+        console.log(err);
+        throw new Error(err.message);
+
+    }
+};
+
+exports.resetPassword = function (req, res, next) {
+    Client.findOne({
+        reset_password_token: req.body.token,
+        reset_password_expires: {
+            $gt: Date.now()
+        }
+    }).exec(function (err, client) {
+        if (!err && client) {
+            if (req.body.newPassword === req.body.verifyPassword) {
+                client.mot_de_pass = bcrypt.hashSync(req.body.newPassword, 10);
+                client.reset_password_token = undefined;
+                client.reset_password_expires = undefined;
+                client.save(function (err) {
+                    if (err) {
+                        return res.status(422).send({
+                            message: err
+                        });
+                    } else {
+                        var data = {
+                            to: client.email,
+                            from: process.env.MAILER_EMAIL_ID,
+                            template: 'reset-password-email',
+                            subject: 'Confirmation de réinitialisation',
+                            context: {
+                                name: client.nom.split(' ')[0]
+                            }
+                        };
+
+                        smtpTransport.sendMail(data, function (err) {
+                            if (!err) {
+                                return res.json({ message: 'Password reset' });
+                            } else {
+                                console.log('err', err);
+                                return res.status(400).json({
+                                    //status: 400,
+                                    status: "error",
+                                    message: err
+                                });
+                            }
+                        });
+                    }
+                });
+            } else {
+                return res.status(422).send({
+                    message: 'Passwords do not match'
+                });
+            }
+        } else {
+            return res.status(400).send({
+                message: 'Password reset token is invalid or has expired.'
+            });
+        }
+    });
+};
 

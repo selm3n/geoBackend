@@ -4,6 +4,7 @@ const keys = require('../config/keys');
 const passport = require('passport');
 
 const Article = require('../models/article');
+const Historique = require("../models/historique");
 var mongoose = require("mongoose");
 const mongo = require('mongodb');
 const validateRegisterInput = require('../validation/register');
@@ -189,25 +190,30 @@ exports.updateArticle = (req, res, next) => {
     }
 }
 
-exports.searchArticles = (req, res, next) => {
+exports.searchArticles = async (req, res, next) => {
     try {
         const search = req.body.search;
 
-        Article.find({
+        let articles = await Article.find({
             $or: [
-            {nom: { $regex: '.*' + search + '.*' } },
-            {ref: { $regex: '.*' + search + '.*' } },
-        ],
-        })
-            .then(articles => {
-                if (!articles) {
-                    errors.noprofile = 'There are no articles';
-                    return res.status(404).json(errors);
-                }
+                { nom: { $regex: '.*' + search + '.*' } },
+                { ref: { $regex: '.*' + search + '.*' } },
+            ],
+        }).exec();
+            
+        const newh = {
+            client: req.user._id,
+            mot_cherche: search,
+          };
+        await Historique.create(newh);      
 
-                res.json(articles);
-            })
-        //.catch(err => res.status(404).json({ profile: 'There are no articles' }));
+        res.json(
+            {
+                success: true,
+                data: articles
+            }
+        )
+        
     } catch (err) {
         console.log(err);
         throw new Error(err.message);

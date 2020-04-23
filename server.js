@@ -9,6 +9,8 @@ const clients = require("./routes/api/clients");
 const articles = require("./routes/api/articles");
 
 const indexArticles = require("./routes/index/articles");
+const indexHistoriques = require("./routes/index/historiques");
+const indexClients = require("./routes/index/clients");
 
 const swaggerUi = require('swagger-ui-express');
 var swaggerJsdoc = require("swagger-jsdoc");
@@ -76,6 +78,7 @@ mongoose
   .connect(db, { useUnifiedTopology: true , useNewUrlParser: true })
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
+  mongoose.set('useFindAndModify', false);
 
 // Passport middleware
 app.use(passport.initialize());
@@ -90,6 +93,8 @@ clients.setup(app);
 
 // Use api Routes
 indexArticles.setup(app);
+indexHistoriques.setup(app);
+indexClients.setup(app);
 //app.use('/api/users', users);
 // app.use('/api/profile', profile);
 // app.use('/api/posts', posts);
@@ -102,3 +107,5 @@ app.listen(port, () => console.log(`Server running on port ${port}`));
  
 //app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+
+

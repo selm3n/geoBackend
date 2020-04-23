@@ -27,6 +27,8 @@ const ClientSchema = new Schema({
   tel_mobile: String,
   interet: String,
 
+  reset_password_token: String,
+  reset_password_expires: String,
 
   //compte_active: String,
   

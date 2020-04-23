@@ -157,5 +157,59 @@ app.post('/api/clients/login', clientcontroller.loginClient);
    */
 app.get('/api/clients/current', passport.authenticate('jwt', { session: false }), clientcontroller.currentClient);
 
+/**
+   * @swagger
+   * /api/clients/forgotpassword:
+   *   post:
+   *     description: client current
+   *     tags: [Client]
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *              - name: email
+   *                description: email
+   *                required: true
+   *                type: string
+   *                in: formData
+   *     responses:
+   *       200:
+   *         description: Success
+   *       204:
+   *         description: No Content
+   */
+  app.post('/api/clients/forgotpassword',  clientcontroller.forgotPassword);
+
+  /**
+   * @swagger
+   * /api/clients/resetpassword:
+   *   post:
+   *     description: client current
+   *     tags: [Client]
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *              - name: token
+   *                description: token
+   *                required: true
+   *                type: string
+   *                in: formData
+   *              - name: newPassword
+   *                description: newPassword
+   *                required: true
+   *                type: string
+   *                in: formData
+   *              - name: verifyPassword
+   *                description: verifyPassword
+   *                required: true
+   *                type: string
+   *                in: formData
+   *     responses:
+   *       200:
+   *         description: Success
+   *       204:
+   *         description: No Content
+   */
+  app.post('/api/clients/resetpassword',  clientcontroller.resetPassword);
+
 
 }
