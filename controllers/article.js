@@ -53,6 +53,37 @@ exports.addArticle = (req, res, next) => {
             nom: req.body.nom,
             tva: req.body.tva,
 
+            poids_carton: req.body.poids_carton,
+            volume_carton: req.body.volume_carton,
+            prix_remise: req.body.prix_remise,
+            monnaie: req.body.monnaie,
+            code_remise: req.body.code_remise,
+            pourcentage_remise: req.body.pourcentage_remise,
+            unite_vente: req.body.unite_vente,
+            carton_euro: req.body.carton_euro,
+            palette_euro: req.body.palette_euro,
+            palette_qte: req.body.palette_qte,
+            code_douanier: req.body.code_douanier,
+            ean_code: req.body.ean_code,
+            pays_origine: req.body.pays_origine,
+            hazardous_good: req.body.hazardous_good,
+            longueur: req.body.longueur,
+            largeur: req.body.largeur,
+            hauteur: req.body.hauteur,
+            
+            subpac_type: req.body.subpac_type,
+            subpac_longueur: req.body.subpac_longueur,
+            subpac_largeur: req.body.subpac_largeur,
+            subpac_hauteur: req.body.subpac_hauteur,
+            subpac_poids: req.body.subpac_poids,
+            subpac_qte: req.body.subpac_qte,
+            carton_type: req.body.carton_type,
+            longueur_carton: req.body.longueur_carton,
+            largeur_carton: req.body.largeur_carton,
+            hauteur_carton: req.body.hauteur_carton,
+            carton_qte: req.body.carton_qte,
+            source: req.body.source,
+
             files: files,
             image: `${process.env.REACT_APP_MEDIA_PATH}/${req.files.image[0].filename}`,
             description: req.body.description,
@@ -164,6 +195,37 @@ exports.updateArticle = (req, res, next) => {
         if (req.body.remise) articleFields.remise = req.body.remise;
         if (req.body.nom) articleFields.nom = req.body.nom;
         if (req.body.tva) articleFields.tva = req.body.tva;
+
+        if (req.body.poids_carton) articleFields.poids_carton= req.body.poids_carton;
+        if (req.body.volume_carton) articleFields.volume_carton= req.body.volume_carton;
+        if (req.body.prix_remise) articleFields.prix_remise= req.body.prix_remise;
+        if (req.body.monnaie) articleFields.monnaie= req.body.monnaie;
+        if (req.body.code_remise) articleFields.code_remise= req.body.code_remise;
+        if (req.body.pourcentage_remise) articleFields.pourcentage_remise= req.body.pourcentage_remise;
+        if (req.body.unite_vente) articleFields.unite_vente= req.body.unite_vente;
+        if (req.body.carton_euro) articleFields.carton_euro= req.body.carton_euro;
+        if (req.body.palette_euro) articleFields.palette_euro= req.body.palette_euro;
+        if (req.body.palette_qte) articleFields.palette_qte= req.body.palette_qte;
+        if (req.body.code_douanier) articleFields.code_douanier= req.body.code_douanier;
+        if (req.body.ean_code) articleFields.ean_code= req.body.ean_code;
+        if (req.body.pays_origine) articleFields.pays_origine= req.body.pays_origine;
+        if (req.body.hazardous_good) articleFields.hazardous_good= req.body.hazardous_good;
+        if (req.body.longueur) articleFields.longueur= req.body.longueur;
+        if (req.body.largeur) articleFields.largeur= req.body.largeur;
+        if (req.body.hauteur) articleFields.hauteur= req.body.hauteur;
+        
+        if (req.body.subpac_type) articleFields.subpac_type= req.body.subpac_type;
+        if (req.body.subpac_longueur) articleFields.subpac_longueur= req.body.subpac_longueur;
+        if (req.body.subpac_largeur) articleFields.subpac_largeur= req.body.subpac_largeur;
+        if (req.body.subpac_hauteur) articleFields.subpac_hauteur= req.body.subpac_hauteur;
+        if (req.body.subpac_poids) articleFields.subpac_poids= req.body.subpac_poids;
+        if (req.body.subpac_qte) articleFields.subpac_qte= req.body.subpac_qte;
+        if (req.body.carton_type) articleFields.carton_type= req.body.carton_type;
+        if (req.body.longueur_carton) articleFields.longueur_carton= req.body.longueur_carton;
+        if (req.body.largeur_carton) articleFields.largeur_carton= req.body.largeur_carton;
+        if (req.body.hauteur_carton) articleFields.hauteur_carton= req.body.hauteur_carton;
+        if (req.body.carton_qte) articleFields.carton_qte= req.body.carton_qte;
+        if (req.body.source) articleFields.source= req.body.source;
 
         if (req.body.image) articleFields.image = `${process.env.REACT_APP_MEDIA_PATH}/${req.files.image[0].filename}`;
         if (req.body.description) articleFields.description = req.body.description;

@@ -97,6 +97,122 @@ module.exports.setup = function (app) {
      *         description: tva
      *         type: number
      *         in: formData
+     *       - name: poids_carton
+     *         description: poids carton
+     *         type: string
+     *         in: formData
+     *       - name: volume_carton
+     *         description: volume carton
+     *         type: string
+     *         in: formData
+     *       - name: prix_remise
+     *         description: prix remise
+     *         type: string
+     *         in: formData
+     *       - name: monnaie
+     *         description: monnaie
+     *         type: string
+     *         in: formData
+     *       - name: code_remise
+     *         description: code remise
+     *         type: string
+     *         in: formData
+     *       - name: pourcentage_remise
+     *         description: pourcentage remise
+     *         type: string
+     *         in: formData
+     *       - name: unite_vente
+     *         description: unite vente
+     *         type: string
+     *         in: formData
+     *       - name: carton_euro
+     *         description: carton_euro
+     *         type: string
+     *         in: formData
+     *       - name: palette_euro
+     *         description: palette euro
+     *         type: string
+     *         in: formData
+     *       - name: palette_qte
+     *         description: palette qte
+     *         type: number
+     *         in: formData
+     *       - name: code_douanier
+     *         description: code douanier
+     *         type: string
+     *         in: formData
+     *       - name: ean_code
+     *         description: ean code
+     *         type: string
+     *         in: formData
+     *       - name: pays_origine
+     *         description: pays origine
+     *         type: string
+     *         in: formData
+     *       - name: hazardous_good
+     *         description: hazardous good
+     *         type: string
+     *         in: formData
+     *       - name: longueur
+     *         description: longueur
+     *         type: number
+     *         in: formData
+     *       - name: largeur
+     *         description: largeur
+     *         type: number
+     *         in: formData
+     *       - name: hauteur
+     *         description: hauteur
+     *         type: number
+     *         in: formData
+     *       - name: subpac_type
+     *         description: subpac_type
+     *         type: string
+     *         in: formData
+     *       - name: subpac_longueur
+     *         description: subpac longueur
+     *         type: number
+     *         in: formData
+     *       - name: subpac_largeur
+     *         description: subpac largeur
+     *         type: number
+     *         in: formData
+     *       - name: subpac_hauteur
+     *         description: subpac_hauteur
+     *         type: number
+     *         in: formData
+     *       - name: subpac_poids
+     *         description: subpac poids
+     *         type: string
+     *         in: formData
+     *       - name: subpac_qte
+     *         description: subpac qte
+     *         type: string
+     *         in: formData
+     *       - name: carton_type
+     *         description: carton type
+     *         type: string
+     *         in: formData
+     *       - name: longueur_carton
+     *         description: longueur carton
+     *         type: number
+     *         in: formData
+     *       - name: largeur_carton
+     *         description: largeur carton
+     *         type: number
+     *         in: formData
+     *       - name: hauteur_carton
+     *         description: hauteur carton
+     *         type: number
+     *         in: formData
+     *       - name: carton_qte
+     *         description: carton qte
+     *         type: number
+     *         in: formData
+     *       - name: source
+     *         description: source
+     *         type: string
+     *         in: formData
      *       - name: image
      *         description: image article
      *         type: file
@@ -200,6 +316,122 @@ module.exports.setup = function (app) {
      *       - name: tva
      *         description: tva
      *         type: number
+     *         in: formData
+     *       - name: poids_carton
+     *         description: poids carton
+     *         type: string
+     *         in: formData
+     *       - name: volume_carton
+     *         description: volume carton
+     *         type: string
+     *         in: formData
+     *       - name: prix_remise
+     *         description: prix remise
+     *         type: string
+     *         in: formData
+     *       - name: monnaie
+     *         description: monnaie
+     *         type: string
+     *         in: formData
+     *       - name: code_remise
+     *         description: code remise
+     *         type: string
+     *         in: formData
+     *       - name: pourcentage_remise
+     *         description: pourcentage remise
+     *         type: string
+     *         in: formData
+     *       - name: unite_vente
+     *         description: unite vente
+     *         type: string
+     *         in: formData
+     *       - name: carton_euro
+     *         description: carton_euro
+     *         type: string
+     *         in: formData
+     *       - name: palette_euro
+     *         description: palette euro
+     *         type: string
+     *         in: formData
+     *       - name: palette_qte
+     *         description: palette qte
+     *         type: number
+     *         in: formData
+     *       - name: code_douanier
+     *         description: code douanier
+     *         type: string
+     *         in: formData
+     *       - name: ean_code
+     *         description: ean code
+     *         type: string
+     *         in: formData
+     *       - name: pays_origine
+     *         description: pays origine
+     *         type: string
+     *         in: formData
+     *       - name: hazardous_good
+     *         description: hazardous good
+     *         type: string
+     *         in: formData
+     *       - name: longueur
+     *         description: longueur
+     *         type: number
+     *         in: formData
+     *       - name: largeur
+     *         description: largeur
+     *         type: number
+     *         in: formData
+     *       - name: hauteur
+     *         description: hauteur
+     *         type: number
+     *         in: formData
+     *       - name: subpac_type
+     *         description: subpac_type
+     *         type: string
+     *         in: formData
+     *       - name: subpac_longueur
+     *         description: subpac longueur
+     *         type: number
+     *         in: formData
+     *       - name: subpac_largeur
+     *         description: subpac largeur
+     *         type: number
+     *         in: formData
+     *       - name: subpac_hauteur
+     *         description: subpac_hauteur
+     *         type: number
+     *         in: formData
+     *       - name: subpac_poids
+     *         description: subpac poids
+     *         type: string
+     *         in: formData
+     *       - name: subpac_qte
+     *         description: subpac qte
+     *         type: string
+     *         in: formData
+     *       - name: carton_type
+     *         description: carton type
+     *         type: string
+     *         in: formData
+     *       - name: longueur_carton
+     *         description: longueur carton
+     *         type: number
+     *         in: formData
+     *       - name: largeur_carton
+     *         description: largeur carton
+     *         type: number
+     *         in: formData
+     *       - name: hauteur_carton
+     *         description: hauteur carton
+     *         type: number
+     *         in: formData
+     *       - name: carton_qte
+     *         description: carton qte
+     *         type: number
+     *         in: formData
+     *       - name: source
+     *         description: source
+     *         type: string
      *         in: formData
      *       - name: image
      *         description: image article
