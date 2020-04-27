@@ -98,7 +98,7 @@ exports.addClient = (req, res, next) => {
                     interet: req.body.interet,
 
 
-                    //compte_active: false,
+                    compte_active: false,
 
                 });
 
@@ -108,13 +108,40 @@ exports.addClient = (req, res, next) => {
                         newClient.mot_de_pass = hash;
                         newClient
                             .save()
-                            .then(client => res.json(
-                                {
-                                    status: "success",
-                                    message: "client successfully added",
-                                    data: client
-                                }
-                            ))
+                            .then(
+                              
+                                 data = {
+                                    to: req.body.email,
+                                    from: process.env.MAILER_EMAIL_ID,
+                                    template: 'activate-account-email',
+                                    subject: 'Activation compte GéoNégoce',
+                                    context: {
+                                        url: 'http://localhost:3000/api/clients/particulier/activation?email=' + req.body.email,
+                                        name: req.body.nom.split(' ')[0]
+                                    }
+                                },
+                                
+                                smtpTransport.sendMail(data, function (err) {
+                                    if (!err) {
+                                         return res.json({ message: 'client successfully added, Kindly check your email to activate your account !', data: {data, newClient} });
+                                    } else {
+                                        console.log('err',err);
+                                        return res.status(400).json({
+                                            //status: 400,
+                                            status: "error",
+                                            message: err
+                                          });
+                                    }
+                                }),
+
+                            //     client => res.json(
+                            //     {
+                            //         status: "success",
+                            //         message: "client successfully added",
+                            //         data: client
+                            //     }
+                            // )
+                            )
                             .catch(err => console.log(err));
                     });
                 });
@@ -128,6 +155,60 @@ exports.addClient = (req, res, next) => {
         //   messsage: err.message,
 
         // });
+    }
+}
+
+exports.activateClient = async (req, res, next) => {
+    try {
+        var client = await  Client.findOneAndUpdate({ email: req.body.email },{compte_active:true}).lean().exec();
+        
+        client.compte_active=true;
+        if(client.type.trim()=='professionnel'){
+            
+            var data = {
+                to: client.email,
+                from: process.env.MAILER_EMAIL_ID,
+                template: 'discount-pro-email',
+                subject: 'remise géonégoce',
+                context: {
+                    url: 'http://localhost:3000/clients/demanderemise?email=' + client.email,
+                    name: client.nom.split(' ')[0]
+                }
+            };
+            
+            smtpTransport.sendMail(data, function (err) {
+                if (!err) {
+                     return res.json({ 
+                        status: "success",
+                        message: 'client activated and discount mail sent successfully',
+                        data: {data, client} });
+                } else {
+                    console.log('err',err);
+                    return res.status(400).json({
+                        //status: 400,
+                        status: "error",
+                        message: err
+                      });
+                }
+            });
+
+        }else{
+            return res.json(
+                {
+                    status: "success",
+                    message: "client successfully activated",
+                    data: client
+                }
+            )
+
+        }
+        
+            
+        
+    } catch (err) {
+        console.log(err);
+        throw new Error(err.message);
+        
     }
 }
 

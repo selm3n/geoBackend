@@ -30,7 +30,7 @@ const ClientSchema = new Schema({
   reset_password_token: String,
   reset_password_expires: String,
 
-  //compte_active: String,
+  compte_active: Boolean,
   
   
 },

@@ -114,6 +114,28 @@ app.post('/api/clients/inscription', clientcontroller.addClient);
 
 /**
    * @swagger
+   * /api/clients/particular/activate:
+   *   post:
+   *     description: client login
+   *     tags: [Client]
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *              - name: email
+   *                description: email
+   *                required: true
+   *                type: string
+   *                in: formData
+   *     responses:
+   *       200:
+   *         description: Success
+   *       204:
+   *         description: No Content
+   */
+  app.post('/api/clients/particular/activate', clientcontroller.activateClient);
+
+/**
+   * @swagger
    * /api/clients/login:
    *   post:
    *     description: client login
