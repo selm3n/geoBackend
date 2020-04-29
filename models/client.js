@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const AdresseSchema = require('./adresse.js').schema;
 
 // Create Schema
 const ClientSchema = new Schema({
@@ -10,7 +11,10 @@ const ClientSchema = new Schema({
   rs: String,
   email: String,   
   tel_fixe: String,
-  adresses: String,
+  adresses: [
+    //_id: false,
+    AdresseSchema
+  ],
   cp: String,
   pays: String,
   ville: String,
@@ -39,4 +43,4 @@ const ClientSchema = new Schema({
 }
 );
 
-module.exports = Utilisateur = mongoose.model('clients', ClientSchema);
+module.exports = Client = mongoose.model('clients', ClientSchema);

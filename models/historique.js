@@ -11,4 +11,4 @@ const HistoriqueSchema = new Schema({
 }
 );
 
-module.exports = Marque = mongoose.model('historiques', HistoriqueSchema);
+module.exports = Historique = mongoose.model('historiques', HistoriqueSchema);

@@ -4,6 +4,7 @@ const keys = require('../config/keys');
 const passport = require('passport');
 
 const Client = require('../models/client');
+const Adresse = require('../models/adresse');
 var mongoose = require("mongoose");
 const mongo = require('mongodb');
 const validateRegisterInput = require('../validation/register');
@@ -80,7 +81,7 @@ exports.addClient = (req, res, next) => {
                     rs: req.body.rs,
                     email: req.body.email,
                     tel_fixe: req.body.tel_fixe,
-                    adresses: req.body.adresses,
+                    //adresses: req.body.adresses,
                     cp: req.body.cp,
                     pays: req.body.pays,
                     ville: req.body.ville,
@@ -101,6 +102,21 @@ exports.addClient = (req, res, next) => {
                     compte_active: false,
 
                 });
+
+                const newadr = new Adresse({
+                    adr_nom: req.body.adr_nom,
+                    adr_prenom: req.body.adr_prenom,
+                    adr_nom_societe: req.body.adr_nom_societe,
+                    adr_pays: req.body.adr_pays,
+                    adr_cp: req.body.adr_cp,
+                    adr_ville: req.body.adr_ville,
+                    adr_primaire: req.body.adr_primaire,
+                    adr_secondaire: req.body.adr_secondaire,
+                    adr_tel_fixe: req.body.adr_tel_fixe,
+                    adr_tel_mobile: req.body.adr_tel_mobile
+
+                });
+                newClient.adresses.push(newadr);
 
                 bcrypt.genSalt(10, (err, salt) => {
                     bcrypt.hash(newClient.mot_de_pass, salt, (err, hash) => {
@@ -400,4 +416,130 @@ exports.resetPassword = function (req, res, next) {
         }
     });
 };
+
+exports.updateuseradresses = async function (req, res, next) {
+    let adrId = mongoose.Types.ObjectId(req.body.adrid);
+    Client.updateOne(
+        {
+            email: req.body.email,
+            "adresses._id": req.body.adrId
+        },
+        {
+            $set: {
+                "adresses.$.adr_nom": req.body.adr_nom,
+                "adresses.$.adr_prenom": req.body.adr_prenom,
+                "adresses.$.adr_nom_societe": req.body.adr_nom_societe,
+                "adresses.$.adr_pays": req.body.adr_pays,
+                "adresses.$.adr_cp": req.body.adr_cp,
+                "adresses.$.adr_ville": req.body.adr_ville,
+                "adresses.$.adr_primaire": req.body.adr_primaire,
+                "adresses.$.adr_secondaire": req.body.adr_secondaire,
+                "adresses.$.adr_tel_fixe": req.body.adr_tel_fixe,
+                "adresses.$.adr_tel_mobile": req.body.adr_tel_mobile,
+            }
+        }
+    ).exec(function (err, client) {
+
+        if (err) {
+            console.log(err);
+            throw new Error(err.message);
+        }
+        res.json({
+            status: "success",
+            message: "client adress updated sucessfully",
+            data: client
+        });
+    });
+};
+
+exports.adduseradresses = async function (req, res, next) {
+    const newadr = new Adresse({
+        adr_nom: req.body.adr_nom,
+        adr_prenom: req.body.adr_prenom,
+        adr_nom_societe: req.body.adr_nom_societe,
+        adr_pays: req.body.adr_pays,
+        adr_cp: req.body.adr_cp,
+        adr_ville: req.body.adr_ville,
+        adr_primaire: req.body.adr_primaire,
+        adr_secondaire: req.body.adr_secondaire,
+        adr_tel_fixe: req.body.adr_tel_fixe,
+        adr_tel_mobile: req.body.adr_tel_mobile
+    });
+
+    Client.findOne(
+        {
+            email: req.body.email,
+        }
+    ).exec(function (err, client) {
+        client.adresses.push(newadr);
+        client.save();
+        if (err) {
+            console.log(err);
+            throw new Error(err.message);
+        }
+        res.json({
+            status: "success",
+            message: "client adress added sucessfully",
+            data: client
+        });
+    });
+};
+
+exports.deleteuseradresses = async function (req, res, next) {
+    Client.updateOne(
+        { email: req.params.email,
+            "adresses._id": req.params.adrId
+        },
+        { $pull: { adresses: { _id: req.params.adrId } } },
+        ).exec(function (err, client) {
+
+        if (err) {
+            console.log(err);
+            throw new Error(err.message);
+        }
+        return res.json({
+            status: "success",
+            message: "client adress removed sucessfully",
+            data: client
+        });
+    });
+    
+};
+
+exports.updateClient = (req, res, next) => {
+    try {
+        const id = req.body.id;
+        const clientFields = {};
+
+        if (req.body.type) clientFields.type = req.body.type;
+        if (req.body.civilite) clientFields.civilite = req.body.civilite;
+        if (req.body.nom) clientFields.nom = req.body.nom;
+        if (req.body.prenom) clientFields.prenom = req.body.prenom;
+        if (req.body.rs) clientFields.rs = req.body.rs;
+        if (req.body.email) clientFields.email = req.body.email;
+        if (req.body.tel_fixe) clientFields.tel_fixe = req.body.tel_fixe;
+        if (req.body.cp) clientFields.cp = req.body.cp;
+        if (req.body.pays) clientFields.pays = req.body.pays;
+        if (req.body.ville) clientFields.ville = req.body.ville;
+        if (req.body.news_letter) clientFields.news_letter = req.body.news_letter;
+        if (req.body.ip) clientFields.ip = req.body.ip;
+        if (req.body.status) clientFields.status = req.body.status;
+        if (req.body.compte) clientFields.compte = req.body.compte;
+        if (req.body.activite) clientFields.activite = req.body.activite;
+        if (req.body.siren) clientFields.siren = req.body.siren;
+        if (req.body.tva_intra) clientFields.tva_intra = req.body.tva_intra;
+        if (req.body.fonction) clientFields.fonction = req.body.fonction;
+        if (req.body.nom_resp_achat) clientFields.nom_resp_achat = req.body.nom_resp_achat;
+        if (req.body.tel_mobile) clientFields.tel_mobile = req.body.tel_mobile;
+        if (req.body.interet) clientFields.interet = req.body.interet;
+
+        Client.findOneAndUpdate({ _id: new mongo.ObjectId(id) }, clientFields)
+            .then(article => res.json({ success: true, message: "client updated successfully" }));
+
+    } catch (err) {
+        console.log(err);
+        throw new Error(err.message);
+
+    }
+}
 
