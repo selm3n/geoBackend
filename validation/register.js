@@ -8,7 +8,7 @@ module.exports = function validateRegisterInput(data) {
   data.type = !isEmpty(data.type) ? data.type : '';
   data.email = !isEmpty(data.email) ? data.email : '';
   data.mot_de_pass = !isEmpty(data.mot_de_pass) ? data.mot_de_pass : '';
-  data.tel_fixe = !isEmpty(data.tel_fixe) ? data.tel_fixe : '';
+  data.tel_mobile = !isEmpty(data.tel_mobile) ? data.tel_mobile : '';
   //data.rs = !isEmpty(data.rs) ? data.rs : '';
   data.news_letter = !isEmpty(data.news_letter) ? data.news_letter : '';
   //data.cp = !isEmpty(data.cp) ? data.cp : '';
@@ -36,11 +36,11 @@ module.exports = function validateRegisterInput(data) {
     errors.news_letter = 'news_letter field is required';
   }
 
-  if (Validator.isEmpty(data.tel_fixe)) {
-    errors.tel_fixe = 'tel_fixe field is required';
+  if (Validator.isEmpty(data.tel_mobile)) {
+    errors.tel_mobile = 'tel_mobile field is required';
   }
-  if (!Validator.isLength(data.tel_fixe, { min: 8 })) {
-    errors.tel_fixe = 'tel_fixe must be at least 8 characters';
+  if (!Validator.isLength(data.tel_mobile, { min: 8 })) {
+    errors.tel_mobile = 'tel_mobile must be at least 8 characters';
   }
 
   // if (Validator.isEmpty(data.cp)) {

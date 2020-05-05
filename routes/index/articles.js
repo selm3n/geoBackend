@@ -464,21 +464,42 @@ module.exports.setup = function (app) {
 
     /**
        * @swagger
-       * /articles/all:
+       * /articles/all/{offset}:
        *   get:
        *     description: client current
        *     tags: [Article]
        *     produces:
        *       - application/json
+       *     parameters:
+       *       - name: offset
+       *         description: paginator offset
+       *         required: true
+       *         type: string
+       *         in: path
        *     responses:
        *       200:
        *         description: Success
        *       204:
        *         description: No Content
        */
-    app.get('/articles/all',
+    app.get('/articles/all/:offset',
         //passport.authenticate('jwt', { session: false }),
         articlecontroller.allArticles);
+
+      /**
+     * @swagger
+     * /articles/length:
+     *   get:
+     *     description: articles length
+     *     tags: [Article]
+     *     responses:
+     *       200:
+     *         description: Success
+     *       204:
+     *         description: No Content
+     */
+  app.get('/articles/length',
+  articlecontroller.articlesLength);
 
     /**
      * @swagger

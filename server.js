@@ -7,14 +7,18 @@ const passport = require('passport');
 const users = require("./routes/api/users");
 const clients = require("./routes/api/clients");
 const articles = require("./routes/api/articles");
+const commandes = require("./routes/api/commandes");
 
 const indexArticles = require("./routes/index/articles");
 const indexHistoriques = require("./routes/index/historiques");
 const indexClients = require("./routes/index/clients");
+const indexCommandes = require("./routes/index/commandes");
 
 const swaggerUi = require('swagger-ui-express');
 var swaggerJsdoc = require("swagger-jsdoc");
 ///const swaggerDocument = require('./swagger.json');
+
+var cors = require("cors");
 
 const options = {
   swaggerDefinition: {
@@ -66,6 +70,7 @@ require('dotenv').config();
 
 const app = express();
 
+app.use(cors());
 // Body parser middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -90,11 +95,13 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 users.setup(app);
 articles.setup(app);
 clients.setup(app);
+commandes.setup(app);
 
 // Use api Routes
 indexArticles.setup(app);
 indexHistoriques.setup(app);
 indexClients.setup(app);
+indexCommandes.setup(app);
 //app.use('/api/users', users);
 // app.use('/api/profile', profile);
 // app.use('/api/posts', posts);

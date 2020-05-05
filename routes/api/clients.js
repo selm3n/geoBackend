@@ -45,7 +45,6 @@ module.exports.setup = function(app) {
    *         in: formData
    *       - name: tel_fixe
    *         description: telephone fixe
-   *         required: true
    *         type: string
    *         in: formData
    *       - name: adr_nom
@@ -137,6 +136,7 @@ module.exports.setup = function(app) {
    *         in: formData
    *       - name: tel_mobile
    *         description: tel mobile
+   *         required: true
    *         in: formData
    *       - name: interet
    *         description: interet
@@ -404,7 +404,7 @@ app.post('/api/clients/updateadress',passport.authenticate('jwt', { session: fal
    *         description: No Content
    */
   app.post('/api/clients/addadress'
-//   ,passport.authenticate('jwt', { session: false })
+  ,passport.authenticate('jwt', { session: false })
   , clientcontroller.adduseradresses);
 
   
@@ -436,7 +436,7 @@ app.post('/api/clients/updateadress',passport.authenticate('jwt', { session: fal
    *         description: No Content
    */
 app.delete('/api/clients/deleteadress/:email/:adrId'
-// ,passport.authenticate('jwt', { session: false })
+,passport.authenticate('jwt', { session: false })
 , clientcontroller.deleteuseradresses);
 
 /**
@@ -479,7 +479,6 @@ app.delete('/api/clients/deleteadress/:email/:adrId'
    *         in: formData
    *       - name: tel_fixe
    *         description: telephone fixe
-   *         required: true
    *         type: string
    *         in: formData
    *       - name: cp
@@ -531,6 +530,7 @@ app.delete('/api/clients/deleteadress/:email/:adrId'
    *         in: formData
    *       - name: tel_mobile
    *         description: tel mobile
+   *         required: true
    *         in: formData
    *       - name: interet
    *         description: interet

@@ -29,7 +29,33 @@ module.exports.setup = function (app) {
 
   /**
      * @swagger
-     * /api/articles/all:
+     * /api/articles/all/{offset}:
+     *   get:
+     *     description: client current
+     *     tags: [Article]
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: offset
+     *         description: paginator offset
+     *         required: true
+     *         type: string
+     *         in: path
+     *     security:              
+     *      - Bearer: [] 
+     *     responses:
+     *       200:
+     *         description: Success
+     *       204:
+     *         description: No Content
+     */
+  app.get('/api/articles/all/:offset',
+    passport.authenticate('jwt', { session: false }),
+    articlecontroller.allArticles);
+
+    /**
+     * @swagger
+     * /api/articles/length:
      *   get:
      *     description: client current
      *     tags: [Article]
@@ -43,9 +69,9 @@ module.exports.setup = function (app) {
      *       204:
      *         description: No Content
      */
-  app.get('/api/articles/all',
-    passport.authenticate('jwt', { session: false }),
-    articlecontroller.allArticles);
+  app.get('/api/articles/length',
+  passport.authenticate('jwt', { session: false }),
+  articlecontroller.articlesLength);
 
   /**
        * @swagger

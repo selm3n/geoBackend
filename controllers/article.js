@@ -9,6 +9,7 @@ var mongoose = require("mongoose");
 const mongo = require('mongodb');
 const validateRegisterInput = require('../validation/register');
 const validateLoginInput = require('../validation/login');
+const fs = require('fs');
 
 const multer = require('../config/multer');
 
@@ -27,12 +28,12 @@ exports.addArticle = (req, res, next) => {
             });
         }
 
-        var files = [];
-
-        for (let i = 0; i < req.files.length; i++) {
-            files[i] = `${process.env.REACT_APP_MEDIA_PATH}/${req.files[i].filename}`
-            // console.log('files '+req.files[i].filename);
-        }
+        // var files = [];
+        
+        // for (let i = 0; i < req.files.files.length; i++) {
+        //     files[i] = `${process.env.REACT_APP_MEDIA_PATH}/${req.files.files[i].filename}`
+        //     // console.log('files '+req.files.files[i].filename);
+        // }
 
 
 
@@ -84,12 +85,24 @@ exports.addArticle = (req, res, next) => {
             carton_qte: req.body.carton_qte,
             source: req.body.source,
 
-            files: files,
-            image: `${process.env.REACT_APP_MEDIA_PATH}/${req.files.image[0].filename}`,
+            // files: files,
+           // image: `${process.env.REACT_APP_MEDIA_PATH}/${req.files.image[0].filename}`,
             description: req.body.description,
 
         });
 
+        //console.log('req.files',req.files); 
+        if(req.files.image && req.files.image[0]){
+            newArticle.image= `${process.env.REACT_APP_MEDIA_PATH}/${req.files.image[0].filename}`;
+        }
+        if(req.files.files ){
+            var files = [];
+            for (let i = 0; i < req.files.files.length; i++) {
+                files[i] = `${process.env.REACT_APP_MEDIA_PATH}/${req.files.files[i].filename}`
+                // console.log('files '+req.files.files[i].filename);
+            }
+            newArticle.files= files;
+        }
 
 
 
@@ -114,14 +127,22 @@ exports.allArticles = (req, res, next) => {
         //const errors = {};
 
         Article.find()
+        .lean()
             //.populate('user')
             .then(articles => {
                 if (!articles) {
                     errors.noprofile = 'There are no articles';
                     return res.status(404).json(errors);
                 }
-
-                res.json(articles);
+                
+                var art = [];
+                //console.log('req.params.offset',8 +req.params.offset);
+                for (j = parseInt(req.params.offset); j < 9 + parseInt(req.params.offset); j++) {
+                    if (j < articles.length)
+                        art.push( articles[j]);
+                }
+                //console.log('art.length',art.length);
+                res.json(art);
             })
         //.catch(err => res.status(404).json({ profile: 'There are no articles' }));
     } catch (err) {
@@ -175,7 +196,7 @@ exports.deleteArticle = (req, res, next) => {
     }
 }
 
-exports.updateArticle = (req, res, next) => {
+exports.updateArticle = async (req, res, next) => {
     try {
         const id = req.body.id;
         const articleFields = {};
@@ -227,21 +248,43 @@ exports.updateArticle = (req, res, next) => {
         if (req.body.carton_qte) articleFields.carton_qte= req.body.carton_qte;
         if (req.body.source) articleFields.source= req.body.source;
 
-        if (req.body.image) articleFields.image = `${process.env.REACT_APP_MEDIA_PATH}/${req.files.image[0].filename}`;
+        if (req.files.image && req.files.image[0]) {
+            articleFields.image = `${process.env.REACT_APP_MEDIA_PATH}/${req.files.image[0].filename}`;
+            await Article.findOne(
+                {
+                    _id: new mongo.ObjectId(id),
+                }
+            ).exec(function (err, article) {
+                if(article.image){
+                    let img = article.image.split("/uploads").pop();
+                // article.image=null;
+                console.log('img: ',img);
+                fs.unlink('uploads'+img, (err) => {
+                    if (err) throw err;
+                })
+                // article.save();
+                if (err) {
+                    console.log(err);
+                    throw new Error(err.message);
+                }
+                }
+                
+            });
+        }
         if (req.body.description) articleFields.description = req.body.description;
 
-        if (req.body.files) {
-            var files = [];
+        // if (req.body.files) {
+        //     var files = [];
 
-            for (let i = 0; i < req.files.length; i++) {
-                files[i] = `${process.env.REACT_APP_MEDIA_PATH}/${req.files[i].filename}`
-                // console.log('files '+req.files[i].filename);
-            }
-            articleFields.files = req.body.files;
+        //     for (let i = 0; i < req.files.length; i++) {
+        //         files[i] = `${process.env.REACT_APP_MEDIA_PATH}/${req.files[i].filename}`
+        //         // console.log('files '+req.files[i].filename);
+        //     }
+        //     articleFields.files = req.body.files;
 
-        }
+        // }
 
-        Article.findOneAndUpdate({ _id: new mongo.ObjectId(id) },articleFields)
+        await Article.findOneAndUpdate({ _id: new mongo.ObjectId(id) },articleFields)
         .then(article => res.json({ success: true, message: "Article updated successfully" }));
             
 
@@ -276,6 +319,26 @@ exports.searchArticles = async (req, res, next) => {
             }
         )
         
+    } catch (err) {
+        console.log(err);
+        throw new Error(err.message);
+
+    }
+}
+
+exports.articlesLength = (req, res, next) => {
+    try {
+        
+        Article.find()
+        .lean()
+            .then(articles => {
+                if (!articles) {
+                    errors.noprofile = 'There are no articles';
+                    return res.status(404).json(errors);
+                }
+                 res.json(articles.length);
+            })
+       
     } catch (err) {
         console.log(err);
         throw new Error(err.message);
