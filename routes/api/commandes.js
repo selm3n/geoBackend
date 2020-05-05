@@ -35,6 +35,8 @@ module.exports.setup = function(app) {
      *                type: string
      *              devis:
      *                type: string
+     *      security:              
+     *      - Bearer: [] 
      *      responses:
      *        200:
      *          description: OK
