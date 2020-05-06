@@ -1,7 +1,8 @@
 
 const articlecontroller = require("../../controllers/article");
 const jwt = require('jsonwebtoken');
-const passport = require('passport');
+// const passport = require('passport');
+const passport_client = require('passport');
 // const multer = require('../../config/multer');
 
 var multer = require("multer");
@@ -50,7 +51,7 @@ module.exports.setup = function (app) {
      *         description: No Content
      */
   app.get('/api/articles/all/:offset',
-    passport.authenticate('jwt', { session: false }),
+  passport_client.authenticate('client-rule', { session: false }),
     articlecontroller.allArticles);
 
     /**
@@ -70,7 +71,7 @@ module.exports.setup = function (app) {
      *         description: No Content
      */
   app.get('/api/articles/length',
-  passport.authenticate('jwt', { session: false }),
+  passport_client.authenticate('client-rule', { session: false }),
   articlecontroller.articlesLength);
 
   /**
@@ -96,7 +97,7 @@ module.exports.setup = function (app) {
        *         description: No Content
        */
   app.post('/api/articles/search',
-    passport.authenticate('jwt', { session: false }),
+  passport_client.authenticate('client-rule', { session: false }),
     articlecontroller.searchArticles);
 
   /**
@@ -122,7 +123,7 @@ module.exports.setup = function (app) {
    *         description: No Content
    */
   app.get('/api/articles/get/:id',
-    passport.authenticate('jwt', { session: false }),
+  passport_client.authenticate('client-rule', { session: false }),
     articlecontroller.getArticle);
 
 }

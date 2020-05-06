@@ -19,33 +19,11 @@ const validateLoginInput = require('../validation/login');
 exports.addUser = (req, res, next) => {
     try {
         
-        // if(!req.body){
-        //     return res.status(400).json({
-        //         status: 400,
-        //         error: "no req body"
-        //       }); 
-        // }
-
-
-        // const { errors, isValid } = validateRegisterInput(req.body);
-
-        // // Check Validation
-        // if (!isValid) {
-        //     return res.status(400).json(errors);
-        // }
-
-
         User.findOne({ email: req.body.email }).then(user => {
             if (user) {
                 errors.email = 'Email already exists';
                 return res.status(400).json(errors);
             } else {
-                //   const avatar = gravatar.url(req.body.email, {
-                //     s: '200', // Size
-                //     r: 'pg', // Rating
-                //     d: 'mm' // Default
-                //   });
-
                 const newUser = new User({
                     nom: req.body.nom,
                     prenom: req.body.prenom,
@@ -97,7 +75,7 @@ exports.loginUser = async function (req, res, next) {
         }
 
         const email = req.body.email;
-        const mot_de_pass = req.body.mot_de_passe;
+        const mot_de_pass = req.body.mot_de_pass;
 
         user = await User.findOne({ email });
         if (!user) {
@@ -107,7 +85,7 @@ exports.loginUser = async function (req, res, next) {
 
         bcrypt.compare(mot_de_pass, user.mot_de_pass).then(isMatch => {
             if (isMatch) {
-                const payload = { id: user.id, nom: user.nom,email: user.email };
+                const payload = { id: user.id, nom: user.nom,email: user.email, role: user.role };
                 jwt.sign(
                     payload,
                     keys.secretOrKey,
@@ -127,12 +105,8 @@ exports.loginUser = async function (req, res, next) {
 
     } catch (err) {
         console.log(err);
-        //throw new Error(err.message);
-        // return res.status(400).json({
-        //   status: "error",
-        //   messsage: err.message,
-
-        // });
+        throw new Error(err.message);
+        
     }
 
 }
@@ -145,8 +119,9 @@ exports.currentUser = async function (req, res, next) {
     try {
         return res.json({
             id: req.user.id,
-            name: req.user.nom,
-            email: req.user.email
+            nom: req.user.nom,
+            email: req.user.email,
+            role: req.user.role
         });
                
             
@@ -160,16 +135,4 @@ exports.currentUser = async function (req, res, next) {
         // });
     }
 }
-// router.get(
-//   '/current',
-//   passport.authenticate('jwt', { session: false }),
-//   (req, res) => {
-//     res.json({
-//       id: req.user.id,
-//       name: req.user.name,
-//       email: req.user.email
-//     });
-//   }
-// );
 
-// module.exports = router;

@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require("body-parser");
 const passport = require('passport');
 
-const users = require("./routes/api/users");
+// const users = require("./routes/api/users");
 const clients = require("./routes/api/clients");
 const articles = require("./routes/api/articles");
 const commandes = require("./routes/api/commandes");
@@ -13,6 +13,7 @@ const indexArticles = require("./routes/index/articles");
 const indexHistoriques = require("./routes/index/historiques");
 const indexClients = require("./routes/index/clients");
 const indexCommandes = require("./routes/index/commandes");
+const indexUsers = require("./routes/index/users");
 
 const swaggerUi = require('swagger-ui-express');
 var swaggerJsdoc = require("swagger-jsdoc");
@@ -92,7 +93,7 @@ require('./config/passport')(passport);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 // Use api Routes
-users.setup(app);
+// users.setup(app);
 articles.setup(app);
 clients.setup(app);
 commandes.setup(app);
@@ -102,6 +103,8 @@ indexArticles.setup(app);
 indexHistoriques.setup(app);
 indexClients.setup(app);
 indexCommandes.setup(app);
+indexUsers.setup(app);
+
 //app.use('/api/users', users);
 // app.use('/api/profile', profile);
 // app.use('/api/posts', posts);

@@ -1,7 +1,8 @@
 
 const clientcontroller = require("../../controllers/client");
 const jwt = require('jsonwebtoken');
-const passport = require('passport');
+const passport_client = require('passport');
+//const passport = require('passport');
 
 module.exports.setup = function(app) {
 
@@ -214,7 +215,7 @@ app.post('/api/clients/login', clientcontroller.loginClient);
    *       204:
    *         description: No Content
    */
-app.get('/api/clients/current', passport.authenticate('jwt', { session: false }), clientcontroller.currentClient);
+app.get('/api/clients/current', passport_client.authenticate('client-rule', { session: false }), clientcontroller.currentClient);
 
 /**
    * @swagger
@@ -338,7 +339,7 @@ app.get('/api/clients/current', passport.authenticate('jwt', { session: false })
    *       204:
    *         description: No Content
    */
-app.post('/api/clients/updateadress',passport.authenticate('jwt', { session: false }), clientcontroller.updateuseradresses);
+app.post('/api/clients/updateadress',passport_client.authenticate('client-rule', { session: false }), clientcontroller.updateuseradresses);
 
 /**
    * @swagger
@@ -404,7 +405,7 @@ app.post('/api/clients/updateadress',passport.authenticate('jwt', { session: fal
    *         description: No Content
    */
   app.post('/api/clients/addadress'
-  ,passport.authenticate('jwt', { session: false })
+  ,passport_client.authenticate('client-rule', { session: false })
   , clientcontroller.adduseradresses);
 
   
@@ -436,7 +437,7 @@ app.post('/api/clients/updateadress',passport.authenticate('jwt', { session: fal
    *         description: No Content
    */
 app.delete('/api/clients/deleteadress/:email/:adrId'
-,passport.authenticate('jwt', { session: false })
+,passport_client.authenticate('client-rule', { session: false })
 , clientcontroller.deleteuseradresses);
 
 /**
@@ -543,7 +544,7 @@ app.delete('/api/clients/deleteadress/:email/:adrId'
    *       204:
    *         description: No Content
    */
-  app.post('/api/clients/update', passport.authenticate('jwt', { session: false }),clientcontroller.updateClient);
+  app.post('/api/clients/update', passport_client.authenticate('client-rule', { session: false }),clientcontroller.updateClient);
 
 
 }

@@ -1,6 +1,7 @@
 const commandcontroller = require("../../controllers/commande");
 const jwt = require('jsonwebtoken');
-const passport = require('passport');
+// const passport = require('passport');
+const passport_client = require('passport');
 
 module.exports.setup = function(app) {
 
@@ -51,7 +52,7 @@ module.exports.setup = function(app) {
      *         type: number
      */
     app.post('/api/command/add',
-    passport.authenticate('jwt', { session: false }),
+    passport_client.authenticate('client-rule', { session: false }),
     commandcontroller.addCommand);
 
 
