@@ -318,43 +318,49 @@ exports.allClients = (req, res, next) => {
 
 exports.forgotPassword = async function (req, res, next)  {
     try {
-        
+
         var client = await Client.findOne({
-                email: req.body.email
-            }).exec();
-        
-        
-           
-        var token =  crypto.randomBytes(20);
-        token =  token.toString('hex');
-        
-        var newClient = await Client.findByIdAndUpdate({ _id: client._id }, { reset_password_token: token, reset_password_expires: Date.now() + 86400000 }, { new: true }).exec() ;
-        
-        
+            email: req.body.email
+        }).exec();
+
+
+        if (client) {
+            var token = crypto.randomBytes(20);
+            token = token.toString('hex');
+
+            var newClient = await Client.findByIdAndUpdate({ _id: client._id }, { reset_password_token: token, reset_password_expires: Date.now() + 86400000 }, { new: true }).exec();
+
+
             var data = {
                 to: client.email,
                 from: process.env.MAILER_EMAIL_ID,
                 template: 'forgot-password-email',
                 subject: 'Réinitialisation de votre mot de passe',
                 context: {
-                    url: 'http://localhost:3000/api/clients/resetpassword?token=' + token,
+                    url: 'http://46.105.113.29:3000/reset-password?token=' + token,
                     name: client.nom.split(' ')[0]
                 }
             };
-            
+
             smtpTransport.sendMail(data, function (err) {
                 if (!err) {
-                     return res.json({ message: 'Kindly check your email for further instructions', data: data });
+                    return res.json({ message: 'Kindly check your email for further instructions', data: data });
                 } else {
-                    console.log('err',err);
+                    console.log('err', err);
                     return res.status(400).json({
                         //status: 400,
                         status: "error",
                         message: err
-                      });
+                    });
                 }
             });
-        
+        }else{
+            return res.status(404).json({
+                //status: 400,
+                status: "error",
+                message: 'client not found'
+            });
+        }
     } catch (err) {
         console.log(err);
         throw new Error(err.message);
