@@ -1,0 +1,25 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const AdresseSchema = require('./adresse.js').schema;
+const ArticleSchema = require('./article.js').schema;
+
+// Create Schema
+const MoteurSchema = new Schema({
+  
+  
+  marque: String,
+  model: String,
+  num_serie: String,
+  num_arrg: String,
+  monte_engin: String,
+  num_parq: String,
+  
+  client: { type: Schema.Types.ObjectId, ref: "clients" },
+  
+},
+{
+  timestamps: true
+}
+);
+
+module.exports = Moteur = mongoose.model('moteurs', MoteurSchema);

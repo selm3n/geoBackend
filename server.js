@@ -8,6 +8,9 @@ const passport = require('passport');
 const clients = require("./routes/api/clients");
 const articles = require("./routes/api/articles");
 const commandes = require("./routes/api/commandes");
+const engins = require("./routes/api/engins");
+const moteurs = require("./routes/api/moteurs");
+
 
 const indexArticles = require("./routes/index/articles");
 const indexHistoriques = require("./routes/index/historiques");
@@ -97,6 +100,8 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 articles.setup(app);
 clients.setup(app);
 commandes.setup(app);
+engins.setup(app);
+moteurs.setup(app);
 
 // Use api Routes
 indexArticles.setup(app);
