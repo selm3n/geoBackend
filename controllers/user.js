@@ -79,7 +79,7 @@ exports.loginUser = async function (req, res, next) {
 
         user = await User.findOne({ email });
         if (!user) {
-            errors.email = 'User not found';
+            errors.email = 'email not found';
             return res.status(404).json(errors);
         }
 
@@ -98,7 +98,7 @@ exports.loginUser = async function (req, res, next) {
                     }
                 );
             } else {
-                errors.mot_de_passe = 'mot_de_passe incorrect';
+                errors.mot_de_passe = 'email ou mot de passe incorrect';
                 return res.status(400).json(errors);
             }
         });

@@ -264,7 +264,7 @@ exports.loginClient = async function (req, res, next) {
                     }
                 );
             } else {
-                errors.mot_de_passe = 'mot_de_passe incorrect';
+                errors.mot_de_passe = 'email ou mot de passe incorrect';
                 return res.status(400).json(errors);
             }
         });
