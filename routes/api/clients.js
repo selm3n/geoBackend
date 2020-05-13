@@ -411,18 +411,13 @@ app.post('/api/clients/updateadress',passport_client.authenticate('client-rule',
   
   /**
    * @swagger
-   * /api/clients/deleteadress/{email}/{adrId}:
+   * /api/clients/deleteadress/{adrId}:
    *   delete:
    *     description: delete client adress
    *     tags: [Client]
    *     produces:
    *       - application/json
    *     parameters:
-   *              - name: email
-   *                description: email
-   *                required: true
-   *                type: string
-   *                in: path
    *              - name: adrId
    *                description: adr Id
    *                required: true
@@ -436,7 +431,7 @@ app.post('/api/clients/updateadress',passport_client.authenticate('client-rule',
    *       204:
    *         description: No Content
    */
-app.delete('/api/clients/deleteadress/:email/:adrId'
+app.delete('/api/clients/deleteadress/:adrId'
 ,passport_client.authenticate('client-rule', { session: false })
 , clientcontroller.deleteuseradresses);
 

@@ -26,8 +26,6 @@ module.exports.setup = function(app) {
      *                type: string
      *              prix_ttc:
      *                type: string
-     *              client:
-     *                type: string
      *              statut:
      *                type: string
      *              remise:

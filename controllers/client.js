@@ -284,12 +284,23 @@ exports.loginClient = async function (req, res, next) {
 exports.currentClient = async function (req, res, next) {
     // console.log('req.client',req.user.nom);
     try {
-        return res.json({
-            id: req.user.id,
-            name: req.user.nom,
-            email: req.user.email
-        });
+    //     return res.json({
+    //         id: req.user.id,
+    //         name: req.user.nom,
+    //         email: req.user.email
+    //     });
 
+    Client.find(
+        { _id: req.user.id }
+    )
+    .then(client => {
+        res.json(
+            {
+                success: true,
+                data: client
+            }
+        );
+    })
 
     } catch (err) {
         console.log(err);
@@ -427,7 +438,7 @@ exports.updateuseradresses = async function (req, res, next) {
     let adrId = mongoose.Types.ObjectId(req.body.adrid);
     Client.updateOne(
         {
-            email: req.body.email,
+            _id: req.user.id,
             "adresses._id": req.body.adrId
         },
         {
@@ -474,7 +485,7 @@ exports.adduseradresses = async function (req, res, next) {
 
     Client.findOne(
         {
-            email: req.body.email,
+            _id: req.user.id,
         }
     ).exec(function (err, client) {
         client.adresses.push(newadr);
@@ -493,7 +504,7 @@ exports.adduseradresses = async function (req, res, next) {
 
 exports.deleteuseradresses = async function (req, res, next) {
     Client.updateOne(
-        { email: req.params.email,
+        { _id: req.user.id,
             "adresses._id": req.params.adrId
         },
         { $pull: { adresses: { _id: req.params.adrId } } },

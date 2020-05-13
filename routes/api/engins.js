@@ -56,18 +56,12 @@ module.exports.setup = function(app) {
 
     /**
      * @swagger
-     * /api/engins/client/all/{clientId}:
+     * /api/engins/client/all:
      *   get:
      *     description: all engins
      *     tags: [Engin]
      *     produces:
      *       - application/json
-     *     parameters:
-     *       - name: clientId
-     *         description: paginator clientId
-     *         required: true
-     *         type: string
-     *         in: path
      *     security:              
      *      - Bearer: [] 
      *     responses:
@@ -76,7 +70,7 @@ module.exports.setup = function(app) {
      *       204:
      *         description: No Content
      */
-  app.get('/api/engins/client/all/:clientId',
+  app.get('/api/engins/client/all',
   passport_client.authenticate('client-rule', { session: false }),
     engincontroller.allClientEngins);
 

@@ -117,12 +117,23 @@ exports.loginUser = async function (req, res, next) {
  */
 exports.currentUser = async function (req, res, next) {
     try {
-        return res.json({
-            id: req.user.id,
-            nom: req.user.nom,
-            email: req.user.email,
-            role: req.user.role
-        });
+        // return res.json({
+        //     id: req.user.id,
+        //     nom: req.user.nom,
+        //     email: req.user.email,
+        //     role: req.user.role
+        // });
+        User.find(
+            { _id: req.user.id }
+        )
+        .then(user => {
+            res.json(
+                {
+                    success: true,
+                    data: user
+                }
+            );
+        })
                
             
     } catch (err) {

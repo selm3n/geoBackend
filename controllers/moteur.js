@@ -35,7 +35,7 @@ exports.addMoteur = (req, res, next) => {
             num_arrg: req.body.num_arrg,
             monte_moteur: req.body.monte_moteur,
             num_parq: req.body.num_parq,
-            client: req.body.client,
+            client: req.user.id,
 
         });
 
@@ -57,8 +57,9 @@ exports.addMoteur = (req, res, next) => {
 
 exports.allClientMoteurs = (req, res, next) => {
     try {
+        // new mongo.ObjectId(req.params.clientId)
         Moteur.find(
-            { client: new mongo.ObjectId(req.params.clientId) }
+            { client: req.user.id  }
         )
         .lean()
             .populate('client')

@@ -35,7 +35,7 @@ exports.addEngin = (req, res, next) => {
             num_serie: req.body.num_serie,
             immatriculation: req.body.immatriculation,
             num_parq: req.body.num_parq,
-            client: req.body.client,
+            client: req.user.id,
 
         });
 
@@ -57,8 +57,10 @@ exports.addEngin = (req, res, next) => {
 
 exports.allClientEngins = (req, res, next) => {
     try {
+        // new mongo.ObjectId(req.params.clientId)
+         console.log('req.user.id',req.user.id);
         Engin.find(
-            { client: new mongo.ObjectId(req.params.clientId) }
+            { client: req.user.id }
         )
         // .lean()
             .populate('client')

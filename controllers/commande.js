@@ -20,9 +20,9 @@ exports.addCommand = async (req, res, next) => {
 
             adr_livraison: req.body.prix_ht,
             adr_facturation: req.body.prix_ht,
-
-            client: req.body.client,
-
+            //
+            client: req.user.id,
+            //
             statut: req.body.statut,
             remise: req.body.remise,
             tva: req.body.tva,
