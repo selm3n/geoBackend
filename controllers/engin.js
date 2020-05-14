@@ -4,6 +4,7 @@ const keys = require('../config/keys');
 const passport = require('passport');
 
 const Engin = require('../models/engin');
+const Moteur = require('../models/moteur');
 const Historique = require("../models/historique");
 var mongoose = require("mongoose");
 const mongo = require('mongodb');
@@ -36,6 +37,7 @@ exports.addEngin = (req, res, next) => {
             immatriculation: req.body.immatriculation,
             num_parq: req.body.num_parq,
             client: req.user.id,
+            moteur: null
 
         });
 
@@ -109,21 +111,22 @@ exports.getEngin = (req, res, next) => {
     }
 }
 
-exports.deleteEngin = (req, res, next) => {
+exports.deleteEngin = async (req, res, next) => {
     try {
 
         var id = req.params.id;
-        Engin.findOne({ _id: new mongo.ObjectId(id) })
-
-            .then(engin => {
-                if (!engin) {
-                    errors.noprofile = 'Engin does not exist';
-                    return res.status(404).json(errors);
-                }
-
-                engin.remove().then(() => res.json({ success: true, message: "Engin deleted successfully" }));
-            })
-
+        let engin = await Engin.findOne({ _id: new mongo.ObjectId(id) }).exec();
+        let moteur = engin.moteur;
+        await engin.remove();    
+        await Moteur.findOneAndUpdate(
+            {
+                _id: new mongo.ObjectId(moteur),
+            },{
+                engin:null
+            }
+        ).exec();       
+        return res.json({ success: true, message: "Engin deleted successfully" });
+            
     } catch (err) {
         console.log(err);
         throw new Error(err.message);
@@ -156,3 +159,68 @@ exports.updateEngin = async (req, res, next) => {
     }
 }
 
+exports.freeEngins = (req, res, next) => {
+    try {
+        // new mongo.ObjectId(req.params.clientId)
+         console.log('req.user.id',req.user.id);
+        Engin.find(
+            { client: req.user.id ,
+                moteur: null
+            }
+        )
+            .then(engins => {
+                if (!engins) {
+                    errors.noprofile = 'There are no engins';
+                    return res.status(404).json(errors);
+                }
+                res.json(engins);
+            })
+    } catch (err) {
+        console.log(err);
+        throw new Error(err.message);
+
+    }
+}
+
+exports.freeMoteurEngins = async (req, res, next) => {
+    try {
+        let moteurid = null;
+        var engins;
+        if (req.params.moteurid && req.params.moteurid != 'undefined') {
+            moteurid = req.params.moteurid;
+            engins = await Engin.find(
+                {
+                    $and: [
+                        {
+                            $or: [
+                                { moteur: moteurid },
+                                { moteur: null }
+                            ]
+                        },
+                        {
+                            $or: [
+                                { client: req.user.id },
+                            ]
+                        }
+                    ]
+                }
+            ).exec();
+        } else {
+            engins = await Engin.find(
+                {
+                    client: req.user.id,
+                    moteur: moteurid
+                }
+            ).exec();
+        }
+        if (!engins) {
+            errors.noprofile = 'There are no engins';
+            return res.status(404).json(errors);
+        }
+        return res.json(engins);
+    } catch (err) {
+        console.log(err);
+        throw new Error(err.message);
+
+    }
+}

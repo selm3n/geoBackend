@@ -38,8 +38,8 @@ module.exports.setup = function(app) {
      *          description: moteur num parq
      *          type: string
      *          in: formData
-     *        - name: client
-     *          description: moteur client
+     *        - name: engin
+     *          description: moteur engin
      *          type: string
      *          in: formData
      *      security:              
@@ -162,6 +162,10 @@ module.exports.setup = function(app) {
      *          in: formData
      *        - name: num_parq
      *          description: moteur num parq
+     *          type: string
+     *          in: formData
+     *        - name: engin
+     *          description: moteur engin
      *          type: string
      *          in: formData
      *      security:              

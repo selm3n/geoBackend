@@ -13,6 +13,7 @@ const EnginSchema = new Schema({
   num_serie: String,
   immatriculation: String,
   num_parq: String,
+  moteur: { type: Schema.Types.ObjectId, ref: "moteurs" },
 
   client: { type: Schema.Types.ObjectId, ref: "clients" },
   

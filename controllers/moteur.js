@@ -4,6 +4,7 @@ const keys = require('../config/keys');
 const passport = require('passport');
 
 const Moteur = require('../models/moteur');
+const Engin = require('../models/engin');
 const Historique = require("../models/historique");
 var mongoose = require("mongoose");
 const mongo = require('mongodb');
@@ -18,7 +19,7 @@ const multer = require('../config/multer');
  * POST /Moteur
  * Api add Moteur.
  */
-exports.addMoteur = (req, res, next) => {
+exports.addMoteur = async (req, res, next) => {
     try {
 
         if (!req.body || Object.keys(req.body).length == 0) {
@@ -33,20 +34,30 @@ exports.addMoteur = (req, res, next) => {
             model: req.body.model,
             num_serie: req.body.num_serie,
             num_arrg: req.body.num_arrg,
-            monte_moteur: req.body.monte_moteur,
+            monte_engin: req.body.monte_engin,
             num_parq: req.body.num_parq,
             client: req.user.id,
+            engin: req.body.engin
 
         });
 
-        newMoteur.save()
-            .then(moteur => res.json(
-                {
-                    success: true,
-                    message: "Moteur successfully added",
-                    data: moteur
+        let moteur = await newMoteur.save();
+        await Engin.updateOne(
+            { _id: new mongo.ObjectId(req.body.engin) },
+            {
+                $set: {
+                    moteur: moteur._id
                 }
-            ))
+            }
+        )
+
+        return res.json(
+            {
+                success: true,
+                message: "Moteur successfully added",
+                data: moteur
+            }
+        )
 
     } catch (err) {
         console.log(err);
@@ -59,16 +70,16 @@ exports.allClientMoteurs = (req, res, next) => {
     try {
         // new mongo.ObjectId(req.params.clientId)
         Moteur.find(
-            { client: req.user.id  }
+            { client: req.user.id }
         )
-        .lean()
+            .lean()
             .populate('client')
             .then(moteurs => {
                 if (!moteurs) {
                     errors.noprofile = 'There are no moteurs';
                     return res.status(404).json(errors);
                 }
-                
+
                 // var eng = [];
                 // //console.log('req.params.offset',8 +req.params.offset);
                 // for (j = parseInt(req.params.offset); j < 9 + parseInt(req.params.offset); j++) {
@@ -91,7 +102,7 @@ exports.getMoteur = (req, res, next) => {
 
         var id = req.params.id;
         Moteur.findOne({ _id: new mongo.ObjectId(id) })
-        .populate('client')
+            .populate('client')
             .then(moteur => {
                 if (!moteur) {
                     errors.noprofile = 'Moteur does not exist';
@@ -108,21 +119,24 @@ exports.getMoteur = (req, res, next) => {
     }
 }
 
-exports.deleteMoteur = (req, res, next) => {
+exports.deleteMoteur = async (req, res, next) => {
     try {
 
         var id = req.params.id;
-        Moteur.findOne({ _id: new mongo.ObjectId(id) })
+        let moteur = await Moteur.findOne({ _id: new mongo.ObjectId(id) }).exec();
 
-            .then(moteur => {
-                if (!moteur) {
-                    errors.noprofile = 'Moteur does not exist';
-                    return res.status(404).json(errors);
-                }
-
-                moteur.remove().then(() => res.json({ success: true, message: "Moteur deleted successfully" }));
-            })
-
+        let engin = moteur.engin;
+        
+        await moteur.remove();
+        await Engin.findOneAndUpdate(
+            {
+                _id: new mongo.ObjectId(engin),
+            },{
+                moteur:null
+            }
+        ).exec();
+        return res.json({ success: true, message: "Moteur deleted successfully" });
+            
     } catch (err) {
         console.log(err);
         throw new Error(err.message);
@@ -141,12 +155,37 @@ exports.updateMoteur = async (req, res, next) => {
         if (req.body.num_arrg) moteurFields.num_arrg = req.body.num_arrg;
         if (req.body.monte_engin) moteurFields.monte_engin = req.body.monte_engin;
         if (req.body.num_parq) moteurFields.num_parq = req.body.num_parq;
-        if (req.body.client) moteurFields.client = req.body.client;
-       
+        // if (req.body.client) moteurFields.client = req.body.client;
 
-        await Moteur.findOneAndUpdate({ _id: new mongo.ObjectId(id) },moteurFields)
-        .then(moteur => res.json({ success: true, message: "Moteur updated successfully" }));
-            
+        if (req.body.engin) moteurFields.engin = req.body.engin;
+
+        if (req.body.engin){
+            let moteur = await Moteur.findOne(
+                {
+                    _id: new mongo.ObjectId(id),
+                }  
+            ).exec();
+            if(moteur.engin!= null && moteur.engin != req.body.engin ){
+                await Engin.findOneAndUpdate(
+                    {
+                        _id: new mongo.ObjectId(moteur.engin),
+                    },{
+                        moteur:null
+                    }
+                ).exec();
+            } 
+        }
+        
+        await Moteur.findOneAndUpdate({ _id: new mongo.ObjectId(id) }, moteurFields)
+        await Engin.findOneAndUpdate(
+            {
+                _id: new mongo.ObjectId(req.body.engin),
+            },{
+                moteur:id
+            }
+        )
+            return  res.json({ success: true, message: "Moteur updated successfully" });
+
 
     } catch (err) {
         console.log(err);

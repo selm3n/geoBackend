@@ -13,6 +13,7 @@ const MoteurSchema = new Schema({
   num_arrg: String,
   monte_engin: String,
   num_parq: String,
+  engin: { type: Schema.Types.ObjectId, ref: "engins" },
   
   client: { type: Schema.Types.ObjectId, ref: "clients" },
   

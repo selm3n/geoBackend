@@ -38,10 +38,6 @@ module.exports.setup = function(app) {
      *          description: engin num parq
      *          type: string
      *          in: formData
-     *        - name: client
-     *          description: engin client
-     *          type: string
-     *          in: formData
      *      security:              
      *      - Bearer: [] 
      *      responses:
@@ -175,5 +171,50 @@ module.exports.setup = function(app) {
     app.post('/api/engins/update',
     passport_client.authenticate('client-rule', { session: false }),
     engincontroller.updateEngin);
+
+    /**
+     * @swagger
+     * /api/engins/client/free:
+     *   get:
+     *     description: all engins
+     *     tags: [Engin]
+     *     produces:
+     *       - application/json
+     *     security:              
+     *      - Bearer: [] 
+     *     responses:
+     *       200:
+     *         description: Success
+     *       204:
+     *         description: No Content
+     */
+  app.get('/api/engins/client/free',
+  passport_client.authenticate('client-rule', { session: false }),
+    engincontroller.freeEngins);
+
+/**
+     * @swagger
+     * /api/engins/client/free/update/{moteurid}:
+     *   get:
+     *     description: all engins
+     *     tags: [Engin]
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: moteurid
+     *         description: moteur id
+     *         type: string
+     *         in: path
+     *     security:              
+     *      - Bearer: [] 
+     *     responses:
+     *       200:
+     *         description: Success
+     *       204:
+     *         description: No Content
+     */
+    app.get('/api/engins/client/free/update/:moteurid',
+    passport_client.authenticate('client-rule', { session: false }),
+      engincontroller.freeMoteurEngins);
 
 }
