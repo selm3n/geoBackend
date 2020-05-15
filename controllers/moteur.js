@@ -74,6 +74,7 @@ exports.allClientMoteurs = (req, res, next) => {
         )
             .lean()
             .populate('client')
+            .populate('marque')
             .then(moteurs => {
                 if (!moteurs) {
                     errors.noprofile = 'There are no moteurs';
@@ -103,6 +104,7 @@ exports.getMoteur = (req, res, next) => {
         var id = req.params.id;
         Moteur.findOne({ _id: new mongo.ObjectId(id) })
             .populate('client')
+            .populate('marque')
             .then(moteur => {
                 if (!moteur) {
                     errors.noprofile = 'Moteur does not exist';

@@ -10,6 +10,7 @@ const articles = require("./routes/api/articles");
 const commandes = require("./routes/api/commandes");
 const engins = require("./routes/api/engins");
 const moteurs = require("./routes/api/moteurs");
+const marques = require("./routes/api/marques");
 
 
 const indexArticles = require("./routes/index/articles");
@@ -17,6 +18,7 @@ const indexHistoriques = require("./routes/index/historiques");
 const indexClients = require("./routes/index/clients");
 const indexCommandes = require("./routes/index/commandes");
 const indexUsers = require("./routes/index/users");
+const indexMarques = require("./routes/index/marques");
 
 const swaggerUi = require('swagger-ui-express');
 var swaggerJsdoc = require("swagger-jsdoc");
@@ -102,6 +104,7 @@ clients.setup(app);
 commandes.setup(app);
 engins.setup(app);
 moteurs.setup(app);
+marques.setup(app);
 
 // Use api Routes
 indexArticles.setup(app);
@@ -109,6 +112,7 @@ indexHistoriques.setup(app);
 indexClients.setup(app);
 indexCommandes.setup(app);
 indexUsers.setup(app);
+indexMarques.setup(app);
 
 //app.use('/api/users', users);
 // app.use('/api/profile', profile);

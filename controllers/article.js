@@ -127,6 +127,7 @@ exports.allArticles = (req, res, next) => {
         //const errors = {};
 
         Article.find()
+        .populate('marque')
         .lean()
             //.populate('user')
             .then(articles => {
@@ -157,7 +158,7 @@ exports.getArticle = (req, res, next) => {
 
         var id = req.params.id;
         Article.findOne({ _id: new mongo.ObjectId(id) })
-
+        .populate('marque')
             .then(article => {
                 if (!article) {
                     errors.noprofile = 'Article does not exist';
@@ -184,6 +185,12 @@ exports.deleteArticle = (req, res, next) => {
                 if (!article) {
                     errors.noprofile = 'Article does not exist';
                     return res.status(404).json(errors);
+                }
+                if(article.image){
+                    let img = article.image.split("/uploads").pop();
+                fs.unlink('uploads'+img, (err) => {
+                    if (err) throw err;
+                })
                 }
 
                 article.remove().then(() => res.json({ success: true, message: "Article deleted successfully" }));
@@ -304,7 +311,9 @@ exports.searchArticles = async (req, res, next) => {
                 { nom: { $regex: '.*' + search + '.*' } },
                 { ref: { $regex: '.*' + search + '.*' } },
             ],
-        }).exec();
+        })
+        .populate('marque')
+        .exec();
             
         const newh = {
             client: req.user._id,

@@ -13,7 +13,7 @@ const ArticleSchema = new Schema({
   qte: Number,
   poids: String,
   volume: String,
-  marque: String,
+  marque: { type: Schema.Types.ObjectId, ref: "marques" },
   categorie: String,
   adaptable: Boolean,
   remise: Number,

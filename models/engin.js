@@ -7,7 +7,7 @@ const ArticleSchema = require('./article.js').schema;
 const EnginSchema = new Schema({
   
   
-  marque: String,
+  marque: { type: Schema.Types.ObjectId, ref: "marques" },
   type: String,
   model: String,
   num_serie: String,

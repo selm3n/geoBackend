@@ -66,6 +66,7 @@ exports.allClientEngins = (req, res, next) => {
         )
         // .lean()
             .populate('client')
+            .populate('marque')
             .then(engins => {
                 if (!engins) {
                     errors.noprofile = 'There are no engins';
@@ -95,6 +96,7 @@ exports.getEngin = (req, res, next) => {
         var id = req.params.id;
         Engin.findOne({ _id: new mongo.ObjectId(id) })
         .populate('client')
+        .populate('marque')
             .then(engin => {
                 if (!engin) {
                     errors.noprofile = 'Engin does not exist';

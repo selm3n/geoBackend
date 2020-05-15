@@ -7,7 +7,7 @@ const ArticleSchema = require('./article.js').schema;
 const MoteurSchema = new Schema({
   
   
-  marque: String,
+  marque: { type: Schema.Types.ObjectId, ref: "marques" },
   model: String,
   num_serie: String,
   num_arrg: String,
