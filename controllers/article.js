@@ -85,6 +85,9 @@ exports.addArticle = (req, res, next) => {
             carton_qte: req.body.carton_qte,
             source: req.body.source,
 
+            model: req.body.model,
+            num_serie: req.body.num_serie,
+
             // files: files,
            // image: `${process.env.REACT_APP_MEDIA_PATH}/${req.files.image[0].filename}`,
             description: req.body.description,
@@ -254,6 +257,9 @@ exports.updateArticle = async (req, res, next) => {
         if (req.body.hauteur_carton) articleFields.hauteur_carton= req.body.hauteur_carton;
         if (req.body.carton_qte) articleFields.carton_qte= req.body.carton_qte;
         if (req.body.source) articleFields.source= req.body.source;
+
+        if (req.body.model) articleFields.model= req.body.model;
+        if (req.body.num_serie) articleFields.num_serie= req.body.num_serie;
 
         if (req.files.image && req.files.image[0]) {
             articleFields.image = `${process.env.REACT_APP_MEDIA_PATH}/${req.files.image[0].filename}`;

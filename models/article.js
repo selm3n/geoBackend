@@ -51,6 +51,9 @@ const ArticleSchema = new Schema({
   hauteur_carton: Number,
   carton_qte: Number,
   source: String,
+
+  model: String,
+  num_serie: String,
  
 
   files: [

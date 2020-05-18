@@ -213,6 +213,14 @@ module.exports.setup = function (app) {
      *         description: source
      *         type: string
      *         in: formData
+     *       - name: model
+     *         description: model
+     *         type: string
+     *         in: formData
+     *       - name: num_serie
+     *         description: numero de serie
+     *         type: string
+     *         in: formData
      *       - name: image
      *         description: image article
      *         type: file
@@ -431,6 +439,14 @@ module.exports.setup = function (app) {
      *         in: formData
      *       - name: source
      *         description: source
+     *         type: string
+     *         in: formData
+     *       - name: model
+     *         description: model
+     *         type: string
+     *         in: formData
+     *       - name: num_serie
+     *         description: numero de serie
      *         type: string
      *         in: formData
      *       - name: image
