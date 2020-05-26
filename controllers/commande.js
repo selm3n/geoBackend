@@ -26,7 +26,7 @@ exports.addCommand = async (req, res, next) => {
             statut: req.body.statut,
             remise: req.body.remise,
             tva: req.body.tva,
-            devise: req.body.devise,
+            commandee: req.body.commandee,
         })
         var atrs = [];
         // console.log('req.body.articles.length',req.body.articles.length);
@@ -68,6 +68,51 @@ exports.updateStatus = async (req, res, next) => {
                 message: "commande statut successfully updated",
             }
         )
+    } catch (err) {
+        console.log(err);
+        throw new Error(err.message);
+
+    }
+}
+
+exports.allClientCommandes = (req, res, next) => {
+    try {
+        // new mongo.ObjectId(req.params.clientId)
+        console.log('req.user.id',req.user.id);
+        Commande.find(
+            { client: req.user.id }
+        )
+        // .lean()
+            .populate('client')
+            .populate('marque')
+            .then(commandes => {
+                if (!commandes) {
+                    errors.noprofile = 'There are no commande';
+                    return res.status(404).json(errors);
+                }
+                res.json(commandes);
+            })
+    } catch (err) {
+        console.log(err);
+        throw new Error(err.message);
+
+    }
+}
+
+exports.allCommandes = (req, res, next) => {
+    try {
+        Commande.find(
+        )
+        // .lean()
+            .populate('client')
+            .populate('marque')
+            .then(commandes => {
+                if (!commandes) {
+                    errors.noprofile = 'There are no commande';
+                    return res.status(404).json(errors);
+                }
+                res.json(commandes);
+            })
     } catch (err) {
         console.log(err);
         throw new Error(err.message);

@@ -12,6 +12,7 @@ const engins = require("./routes/api/engins");
 const moteurs = require("./routes/api/moteurs");
 const marques = require("./routes/api/marques");
 const extrarticles = require("./routes/api/extrarticles"); 
+const devis = require("./routes/api/devis");
 
 
 const indexArticles = require("./routes/index/articles");
@@ -21,6 +22,7 @@ const indexCommandes = require("./routes/index/commandes");
 const indexUsers = require("./routes/index/users");
 const indexMarques = require("./routes/index/marques");
 const indexExtrarticles = require("./routes/index/extrarticles");
+const indexDevis = require("./routes/index/devis");
 
 const swaggerUi = require('swagger-ui-express');
 var swaggerJsdoc = require("swagger-jsdoc");
@@ -108,6 +110,7 @@ engins.setup(app);
 moteurs.setup(app);
 marques.setup(app);
 extrarticles.setup(app);
+devis.setup(app);
 
 // Use api Routes
 indexArticles.setup(app);
@@ -117,6 +120,7 @@ indexCommandes.setup(app);
 indexUsers.setup(app);
 indexMarques.setup(app);
 indexExtrarticles.setup(app);
+indexDevis.setup(app);
 
 //app.use('/api/users', users);
 // app.use('/api/profile', profile);

@@ -28,4 +28,22 @@ module.exports.setup = function(app) {
    *         description: No Content
    */
   app.post('/command/update/status', commandcontroller.updateStatus);
+
+  /**
+     * @swagger
+     * /command/all:
+     *   get:
+     *     description: all commands
+     *     tags: [Commande]
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: Success
+     *       204:
+     *         description: No Content
+     */
+    app.get('/command/all',
+    //passport_client.authenticate('client-rule', { session: false }),
+    commandcontroller.allCommandes);
 }

@@ -1,4 +1,4 @@
-const commandcontroller = require("../../controllers/commande");
+const deviscontroller = require("../../controllers/devis");
 const jwt = require('jsonwebtoken');
 // const passport = require('passport');
 const passport_client = require('passport');
@@ -7,10 +7,10 @@ module.exports.setup = function(app) {
 
 /**
      * @swagger
-     * /api/command/add:
+     * /api/devis/add:
      *    post:
-     *      description: add Commande
-     *      tags: [Commande]
+     *      description: add Devis
+     *      tags: [Devis]
      *      consumes:
      *      - application/json
      *      parameters:
@@ -21,7 +21,11 @@ module.exports.setup = function(app) {
      *              articles:
      *                type: array
      *                items:
-     *                  $ref: '#/definitions/BulkSource'
+     *                  $ref: '#/definitions/Devis'
+     *              noarticles:
+     *                type: array
+     *                items:
+     *                  $ref: '#/definitions/NDevis'
      *              prix_ht:
      *                type: string
      *              prix_ttc:
@@ -32,8 +36,6 @@ module.exports.setup = function(app) {
      *                type: string
      *              tva:
      *                type: string
-     *              devis:
-     *                type: string
      *      security:              
      *      - Bearer: [] 
      *      responses:
@@ -41,24 +43,51 @@ module.exports.setup = function(app) {
      *          description: OK
      * 
      *definitions:
-     *  BulkSource:
+     *  Devis:
      *    type: object
      *    properties:
      *       article:
      *         type: string
      *       qte:
      *         type: number
+     *  NDevis:
+     *    type: object
+     *    properties:
+     *       ref:
+     *         type: string
+     *       marque:
+     *         type: string
+     *       fournisseur:
+     *         type: string
+     *       designation:
+     *         type: string
+     *       prix_achat:
+     *         type: string
+     *       prix_vente:
+     *         type: string
+     *       categorie:
+     *         type: string
+     *       adaptable:
+     *         type: string
+     *       remise:
+     *         type: string
+     *       nom:
+     *         type: string
+     *       tva:
+     *         type: string
+     *       qte:
+     *         type: number
      */
-    app.post('/api/command/add',
+    app.post('/api/devis/add',
     passport_client.authenticate('client-rule', { session: false }),
-    commandcontroller.addCommand);
+    deviscontroller.addDevis);
 
-    /**
+     /**
      * @swagger
-     * /api/command/client/all:
+     * /api/devis/client/all:
      *   get:
-     *     description: all commandes
-     *     tags: [Commande]
+     *     description: all devis
+     *     tags: [Devis]
      *     produces:
      *       - application/json
      *     security:              
@@ -69,10 +98,11 @@ module.exports.setup = function(app) {
      *       204:
      *         description: No Content
      */
-    app.get('/api/command/client/all',
+    app.get('/api/devis/client/all',
     passport_client.authenticate('client-rule', { session: false }),
-    commandcontroller.allClientCommandes);
+    deviscontroller.allClientDevis);
 
+    
 
 
 }
